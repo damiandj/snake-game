@@ -1,16 +1,15 @@
 import random
 
 import pygame
-
-from actor import SnakeHead, Snake, Mouse, SnakeBody
-from arena import Arena
+from model.actor import SnakeHead, Snake, Mouse, SnakeBody
+from model.arena import Arena
 
 
 class Game:
     def __init__(self):
         self.arena_size = int(25)
         self.arena = Arena(size=self.arena_size)
-        self.snake = self._create_snake(init_size=20)
+        self.snake = self._create_snake(init_size=0)
         self.mouse = None
         self.snake_speed = 2 / 20
         self._step = 0
@@ -100,7 +99,7 @@ class Game:
                 if tail.position == self.snake.head.position:
                     self.score = 0
                     self.snake_speed = 2 / 20
-                    self.snake = self._create_snake(init_size=20)
+                    self.snake = self._create_snake(init_size=0)
 
             self.step()
             self._bind_keys()
@@ -151,20 +150,3 @@ class Game:
 
             clock.tick(60)  # limits FPS to 6
             pygame.display.update()
-
-
-game = Game()
-game.run()
-# game.step()
-# print(game.arena.description)
-# game.step()
-# print(game.arena.description)
-# # game.snake.turn_up()
-# game.step()
-# print(game.arena.description)
-# game.step()
-# print(game.arena.description)
-# game.step()
-# print(game.arena.description)
-# game.step()
-# print(game.arena.description)

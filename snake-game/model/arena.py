@@ -1,6 +1,6 @@
 from typing import Union
 
-from actor import SnakeBody, SnakeHead, Mouse
+from model.actor import SnakeBody, SnakeHead, Mouse
 
 
 class Arena:
