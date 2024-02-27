@@ -2,40 +2,51 @@ import copy
 from operator import add
 from typing import List
 
+from config import snake_body_color, snake_head_color
 
-class SnakeBody:
-    def __init__(self, position: List[int]):
+
+class Actor:
+    def __init__(self, position: List[int], color: str = "black"):
         self.position = position
+        self.color = color
 
-        self.color = "aquamarine3"
-        self.direction = [0, 1]  # right
+        self.speed = 1
+        self.step_to_move = 11 - self.speed
+        self.direction = [0, 0]
 
-    def __str__(self):
-        return "B"
+    def _reset_steps_to_move(self):
+        self.step_to_move = 11 - self.speed
 
-    @property
-    def description(self):
-        return f"(SnakePart: {self.position}, {self.direction})"
+    def step(self):
+        self.step_to_move -= 1
+        if not self.step_to_move:
+            self._reset_steps_to_move()
+            self.make_step()
+
+    def make_step(self): ...
 
 
-class SnakeHead(SnakeBody):
+class SnakeBody(Actor):
     def __init__(self, position: List[int]):
+        super().__init__(position, snake_body_color)
+
+
+class SnakeHead(Actor):
+    def __init__(self, position: List[int]):
+        super().__init__(position, snake_head_color)
+
+
+class Snake(Actor):
+    def __init__(self, position: List[int], arena_sizes: List[int]):
         super().__init__(position)
-        self.color = "aquamarine4"
-
-    def __str__(self):
-        return "H"
-
-    @property
-    def description(self):
-        return f"(SnakeHead: {self.position}, {self.direction})"
-
-
-class Snake:
-    def __init__(self, head: SnakeHead, arena_sizes: List[int]):
-        self.head = head
+        self.head = SnakeHead(position)
         self.arena_sizes = arena_sizes
         self.body = [self.head]
+
+    def speed_up(self):
+        if self.speed < 10:
+            self.speed += 1
+            self._reset_steps_to_move()
 
     def add_part(self):
         prev_part = self.body[-1]
@@ -56,7 +67,7 @@ class Snake:
 
         self.body.append(new_part)
 
-    def step(self):
+    def make_step(self):
         old_snake = copy.deepcopy(self.body)
         self.head.position = list(
             map(
@@ -98,28 +109,9 @@ class Snake:
             return
         self.head.direction = [1, 0]
 
-    @property
-    def description(self):
-        return "+".join([item.description for item in self.body])
-
 
 class Mouse:
     def __init__(self, position: List[int]):
         self.position = position
 
         self.color = "darkgray"
-
-
-# head = SnakeHead([5, 5])
-# snake = Snake(head=head)
-# snake.add_part()
-# snake.add_part()
-# print(snake.description)
-# snake.step()
-# print(snake.description)
-# snake.turn_up()
-# snake.step()
-# print(snake.description)
-# snake.add_part()
-# snake.step()
-# print(snake.description)
