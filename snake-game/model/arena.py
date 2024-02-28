@@ -1,6 +1,6 @@
 from typing import Union
 
-from model.actor import SnakeBody, SnakeHead, Mouse
+from model.actor import SnakePart, SnakeHead, Mouse
 
 
 class Arena:
@@ -8,7 +8,7 @@ class Arena:
         self.size = size
         self.arena = [["-" for _ in range(self.size)] for _ in range(self.size)]
 
-    def add_snake_part(self, snake_part: Union[SnakeBody, SnakeHead]):
+    def add_snake_part(self, snake_part: Union[SnakePart, SnakeHead]):
         self.arena[snake_part.position[0]][snake_part.position[1]] = snake_part
 
     def add_mouse(self, mouse: Mouse):

@@ -1,6 +1,7 @@
 import random
 
 import pygame
+
 from config import grid_line_color, screen_size, screen_color, title, arena_color
 from model.actor import Snake, Mouse, Devil
 
@@ -33,13 +34,13 @@ class Game:
     def _bind_keys(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
-            self.snake.turn_up()
+            self.snake.turn_north()
         elif keys[pygame.K_DOWN]:
-            self.snake.turn_bottom()
+            self.snake.turn_south()
         elif keys[pygame.K_LEFT]:
-            self.snake.turn_left()
+            self.snake.turn_west()
         elif keys[pygame.K_RIGHT]:
-            self.snake.turn_right()
+            self.snake.turn_east()
         elif keys[pygame.K_v]:
             self.snake.speed_up()
 
