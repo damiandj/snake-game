@@ -2,7 +2,7 @@ import copy
 from operator import add
 from typing import List
 
-from config import snake_body_color, snake_head_color
+from config import snake_body_color, snake_head_color, mouse_color, devil_color
 
 
 class Actor:
@@ -14,6 +14,14 @@ class Actor:
         self.step_to_move = 11 - self.speed
         self.direction = [0, 0]
 
+    @property
+    def direction(self):
+        return self._direction
+
+    @direction.setter
+    def direction(self, val):
+        self._direction = val
+
     def _reset_steps_to_move(self):
         self.step_to_move = 11 - self.speed
 
@@ -22,6 +30,29 @@ class Actor:
         if not self.step_to_move:
             self._reset_steps_to_move()
             self.make_step()
+
+    def turn_up(self):
+        if self.direction[1] != 0:
+            return
+        self.direction = [0, -1]
+
+    def turn_bottom(self):
+        if self.direction[1] != 0:
+            return
+        self.direction = [0, 1]
+
+    def turn_left(self):
+        if self.direction[0] != 0:
+            return
+        self.direction = [-1, 0]
+
+    def turn_right(self):
+        if self.direction[0] != 0:
+            return
+        self.direction = [1, 0]
+
+    def turn_back(self):
+        self.direction = list(map(lambda x: -1 * x, self.direction))
 
     def make_step(self): ...
 
@@ -38,10 +69,25 @@ class SnakeHead(Actor):
 
 class Snake(Actor):
     def __init__(self, position: List[int], arena_sizes: List[int]):
+        self.body = [SnakeHead(position)]
         super().__init__(position)
-        self.head = SnakeHead(position)
         self.arena_sizes = arena_sizes
-        self.body = [self.head]
+
+    @property
+    def direction(self):
+        return self.head.direction
+
+    @direction.setter
+    def direction(self, val):
+        self.head.direction = val
+
+    @property
+    def head(self):
+        return self.body[0]
+
+    @property
+    def tail(self):
+        return self.body[1:]
 
     def speed_up(self):
         if self.speed < 10:
@@ -70,9 +116,7 @@ class Snake(Actor):
     def make_step(self):
         old_snake = copy.deepcopy(self.body)
         self.head.position = list(
-            map(
-                add, old_snake[0].position, map(lambda x: 1 * x, old_snake[0].direction)
-            )
+            map(add, old_snake[0].position, map(lambda x: 1 * x, self.direction))
         )
         if self.head.position[0] == self.arena_sizes[0]:
             self.head.position[0] = 0
@@ -83,35 +127,18 @@ class Snake(Actor):
         if self.head.position[1] == -1:
             self.head.position[1] = self.arena_sizes[1] - 1
 
-        for item, part in enumerate(self.body[1:]):
+        for item, part in enumerate(self.tail):
             part.position = old_snake[item].position
             part.direction = old_snake[item].direction
 
         del old_snake
 
-    def turn_up(self):
-        if self.head.direction[1] != 0:
-            return
-        self.head.direction = [0, -1]
 
-    def turn_bottom(self):
-        if self.head.direction[1] != 0:
-            return
-        self.head.direction = [0, 1]
-
-    def turn_left(self):
-        if self.head.direction[0] != 0:
-            return
-        self.head.direction = [-1, 0]
-
-    def turn_right(self):
-        if self.head.direction[0] != 0:
-            return
-        self.head.direction = [1, 0]
-
-
-class Mouse:
+class Mouse(Actor):
     def __init__(self, position: List[int]):
-        self.position = position
+        super().__init__(position, color=mouse_color)
 
-        self.color = "darkgray"
+
+class Devil(Actor):
+    def __init__(self, position: List[int]):
+        super().__init__(position, color=devil_color)

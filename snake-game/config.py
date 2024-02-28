@@ -7,3 +7,7 @@ arena_color = "white"
 
 snake_body_color = "aquamarine3"
 snake_head_color = "aquamarine4"
+
+mouse_color = "darkgray"
+
+devil_color = "crimson"

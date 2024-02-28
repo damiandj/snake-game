@@ -2,7 +2,7 @@ import random
 
 import pygame
 from config import grid_line_color, screen_size, screen_color, title, arena_color
-from model.actor import Snake, Mouse
+from model.actor import Snake, Mouse, Devil
 
 
 class Game:
@@ -13,21 +13,21 @@ class Game:
         self.score = 0
 
         # Actors
-        self.snake = self._create_snake(init_size=0)
-        self.mouse = self._create_mouse()
+        self.snake = None
+        self.mouse = None
+        self.devils = []
 
     def _create_snake(self, init_size=0):
         head_position = [int(self.arena_size / 2), int(self.arena_size / 2)]
-        # snake_head = SnakeHead(position=snake_position)
         snake = Snake(
             position=head_position, arena_sizes=[self.arena_size, self.arena_size]
         )
         for _ in range(init_size):
             snake.add_part()
 
-        return snake
+        self.snake = snake
 
-    def step(self):
+    def actors_step(self):
         self.snake.step()
 
     def _bind_keys(self):
@@ -43,16 +43,32 @@ class Game:
         elif keys[pygame.K_v]:
             self.snake.speed_up()
 
+    def _get_used_positions(self):
+        return [actor.position for actor in self.actors]
+
+    def _get_free_random_position(self):
+        used_position = self._get_used_positions()
+        while True:
+            random_position = [
+                random.randint(0, self.arena_size - 1),
+                random.randint(0, self.arena_size - 1),
+            ]
+            if random_position not in used_position:
+                return random_position
+
     def _create_mouse(self):
-        mouse_position = [
+        self.mouse = Mouse(self._get_free_random_position())
+
+    def _create_devil(self):
+        devil_position = [
             random.randint(0, self.arena_size - 1),
             random.randint(0, self.arena_size - 1),
         ]
-        return Mouse(mouse_position)
+        self.devils.append(Devil(devil_position))
 
     def eat_mouse(self):
         self.snake.add_part()
-        self.mouse = self._create_mouse()
+        self._create_mouse()
         self.score += 1
         if not self.score % 2:
             self.snake.speed_up()
@@ -68,7 +84,7 @@ class Game:
             )
 
     def draw_actors(self, surface, cell_size):
-        for actor in [self.mouse] + self.snake.body:
+        for actor in self.actors:
             _actor = pygame.Rect(
                 cell_size * actor.position[0] + 1,
                 cell_size * actor.position[1] + 1,
@@ -85,12 +101,17 @@ class Game:
 
     def restart(self):
         self.score = 0
-        self.snake = self._create_snake(init_size=0)
-        self.mouse = self._create_mouse()
+        self._create_snake(init_size=0)
+        self._create_mouse()
+        self.devils = []
+        self._create_devil()
 
     def _check_if_dead(self):
-        for tail in self.snake.body[1:]:
+        for tail in self.snake.tail:
             if tail.position == self.snake.head.position:
+                return True
+        for devil in self.devils:
+            if devil.position == self.snake.head.position:
                 return True
         return False
 
@@ -101,18 +122,37 @@ class Game:
                 return True
         return False
 
+    @property
+    def actors(self):
+        mouse = [self.mouse] if self.mouse else []
+        snake = self.snake.body if self.snake else []
+
+        return mouse + snake + self.devils
+
+    def initialize(self):
+
+        self._create_snake(init_size=0)
+        self._create_mouse()
+        self._create_devil()
+
+    def game_step(self):
+        if self._check_if_dead():
+            self.restart()
+        self.actors_step()
+        if self.snake.head.position == self.mouse.position:
+            self.eat_mouse()
+
     def run(self):
-
         pygame.init()
-
-        screen = pygame.display.set_mode((screen_size + 100, screen_size + 100))
         pygame.display.set_caption(title)
-
+        screen = pygame.display.set_mode((screen_size + 100, screen_size + 100))
         font = pygame.font.Font(None, 36)
-        clock = pygame.time.Clock()
         cell_size = int(screen_size / self.arena_size)
-        running = True
 
+        self.initialize()
+
+        clock = pygame.time.Clock()
+        running = True
         while running:
             if self._check_if_quit():
                 running = False
@@ -123,18 +163,11 @@ class Game:
 
             self._bind_keys()
 
-            if self._check_if_dead():
-                self.restart()
-
-            self.step()
-
-            if self.snake.head.position == self.mouse.position:
-                self.eat_mouse()
+            self.game_step()
 
             self.draw_actors(grid_surface, cell_size)
             self.draw_grid(grid_surface, cell_size)
             self.draw_score(screen, font)
-
             screen.blit(grid_surface, (50, 50))
 
             clock.tick(60)
