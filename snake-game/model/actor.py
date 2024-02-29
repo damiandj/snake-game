@@ -77,6 +77,7 @@ class Actor:
         self.direction = [1, 0]
 
     def turn_back(self):
+        """Turn back the actor."""
         self.direction = list(map(lambda x: -1 * x, self.direction))
 
     def make_step(self):
