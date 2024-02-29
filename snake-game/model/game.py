@@ -50,12 +50,11 @@ class Game:
             snake.add_part()
 
         self.snake = snake
-        self.actors.append(self.snake)
+        self.actors.extend(self.snake.body)
 
     def actors_step(self):
         """Make a step for all actors."""
-        for actor in self.actors:
-            actor.make_step()
+        self.snake.step()
 
     def _bind_keys(self):
         """Bind keys to the snake's directions."""
@@ -104,6 +103,7 @@ class Game:
         """Eat the mouse."""
         self.actors.remove(self.mouse)
         self.snake.add_part()
+        self.actors.append(self.snake.body[-1])
         self._create_mouse()
         self.score += 1
         if not self.score % 2:
@@ -174,16 +174,44 @@ class Game:
     def game_step(self):
         """Make a step in the game."""
         if self._check_if_dead():
+            self._create_restart_banner()
             self.restart()
         self.actors_step()
         if self.snake.head.position == self.mouse.position:
             self.eat_mouse()
 
+    def _create_restart_banner(self):
+        """Create a restart banner."""
+
+        def _add_text(text, position):
+            text = font.render(text, 1, (255, 255, 255))
+            banner.blit(text, position)
+
+        banner = pygame.Surface((screen_size, screen_size))
+        banner.set_alpha(200)
+        banner.fill((128, 128, 128))
+        font = pygame.font.Font(None, 36)
+        _add_text("You are dead! ", (100, 100))
+        _add_text(f"Your score: {self.score}.", (100, 140))
+        _add_text("Press enter to restart.", (100, 180))
+        self.screen.blit(banner, (50, 50))
+        pygame.display.update()
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    waiting = False
+                    pygame.quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        waiting = False
+                        self.restart()
+
     def run(self):
         """Run the game."""
         pygame.init()
         pygame.display.set_caption(title)
-        screen = pygame.display.set_mode((screen_size + 100, screen_size + 100))
+        self.screen = pygame.display.set_mode((screen_size + 100, screen_size + 100))
         font = pygame.font.Font(None, 36)
         cell_size = int(screen_size / self.arena_size)
 
@@ -195,7 +223,7 @@ class Game:
             if self._check_if_quit():
                 running = False
 
-            screen.fill(screen_color)
+            self.screen.fill(screen_color)
             grid_surface = pygame.Surface((screen_size, screen_size))
             grid_surface.fill(arena_color)
 
@@ -205,8 +233,8 @@ class Game:
 
             self.draw_actors(grid_surface, cell_size)
             self.draw_grid(grid_surface, cell_size)
-            self.draw_score(screen, font)
-            screen.blit(grid_surface, (50, 50))
+            self.draw_score(self.screen, font)
+            self.screen.blit(grid_surface, (50, 50))
 
             clock.tick(60)
             pygame.display.update()
