@@ -1,9 +1,41 @@
 import random
+import time
+from dataclasses import dataclass
+from typing import List
 
 import pygame
 
-from config import grid_line_color, screen_size, screen_color, title, arena_color
+from config import (
+    grid_line_color,
+    screen_size,
+    screen_color,
+    title,
+    arena_color,
+    save_dir,
+)
 from model.actor import Snake, Mouse, Devil
+
+
+@dataclass(frozen=True)
+class HistoryStep:
+    """
+    Represents a step in the game history.
+    """
+
+    snake_head: List[int]
+    snake_tail: List[List[int]]
+    mouse: List[int]
+    devils: List[List[int]]
+    score: int
+
+    def __eq__(self, other):
+        return (
+                self.snake_head == other.snake_head
+                and self.snake_tail == other.snake_tail
+                and self.mouse == other.mouse
+                and self.devils == other.devils
+                and self.score == other.score
+        )
 
 
 class Game:
@@ -24,9 +56,12 @@ class Game:
         """
         Initialize a Game object.
         """
+        self.font = None
+        self.screen = None
         self.arena_size = int(25)
+        self.cell_size = int(screen_size / self.arena_size)
 
-        self.history = []
+        self.history: List[HistoryStep] = []
         self.score = 0
 
         # Actors
@@ -34,6 +69,9 @@ class Game:
         self.snake = None
         self.mouse = None
         self.devils = []
+
+        # History
+        self.history = []
 
     def _create_snake(self, init_size: int = 0):
         """
@@ -131,12 +169,8 @@ class Game:
             )
             pygame.draw.rect(surface, actor.color, rect=_actor)
 
-    def draw_score(self, surface, font):
+    def draw_score(self, surface):
         """Draw the score on the surface."""
-        score_text = font.render(
-            f"Score: {self.score}, speed: {self.snake.speed}", 1, (0, 0, 0)
-        )
-        surface.blit(score_text, (10, 10))
 
     def restart(self):
         """Restart the game."""
@@ -162,6 +196,7 @@ class Game:
         """Check if the game should quit."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                pygame.quit()
                 return True
         return False
 
@@ -174,54 +209,129 @@ class Game:
     def game_step(self):
         """Make a step in the game."""
         if self._check_if_dead():
-            self._create_restart_banner()
+            # self._create_restart_banner()
             self.restart()
         self.actors_step()
         if self.snake.head.position == self.mouse.position:
             self.eat_mouse()
 
+    def save_step_to_history(self):
+        """Save the step to the history."""
+        step = HistoryStep(
+            snake_head=self.snake.head.position,
+            snake_tail=[part.position for part in self.snake.tail],
+            mouse=self.mouse.position,
+            devils=[devil.position for devil in self.devils],
+            score=self.score,
+        )
+        if self.snake.direction != [0, 0]:
+            self.history.append(step)
+
+    def load_step_from_history(self):
+        """Load the step from the history."""
+        step = self.history.pop(0)
+        self.snake.head.position = step.snake_head
+        if len(step.snake_tail) != len(self.snake.tail):
+            self.snake.add_part()
+
+        for part, position in zip(self.snake.tail, step.snake_tail):
+            part.position = position
+
+        self.mouse.position = step.mouse
+        for devil, position in zip(self.devils, step.devils):
+            devil.position = position
+        self.score = step.score
+        self.actors = [self.snake.head] + self.snake.tail + [self.mouse] + self.devils
+
+    def save_history(self, filename: str):
+        """Save the history to a file."""
+        with open(save_dir / filename, "w") as file:
+            file.write(str(self.history))
+
+    def load_history(self, filename: str):
+        """Load the history from a file."""
+        with open(filename, "r") as file:
+            self.history = eval(file.read())
+
+    def run_from_history(self):
+        """Run the game from the history."""
+        pygame.init()
+        pygame.display.set_caption(title)
+
+        self.screen = pygame.display.set_mode((screen_size + 100, screen_size + 100))
+        self.font = pygame.font.Font(None, 36)
+
+        self.initialize()
+
+        clock = pygame.time.Clock()
+        while self.history:
+            self.load_step_from_history()
+            if self._check_if_quit():
+                return
+
+            self.screen.fill(screen_color)
+            grid_surface = pygame.Surface((screen_size, screen_size))
+            grid_surface.fill(arena_color)
+
+            self.game_step()
+
+            self.draw_actors(grid_surface, self.cell_size)
+            self.draw_grid(grid_surface, self.cell_size)
+            try:
+                score_text = self.font.render(
+                    f"Score: {self.score}, speed: {self.snake.speed}", 1, (0, 0, 0)
+                )
+                self.screen.blit(score_text, (10, 10))
+                self.screen.blit(grid_surface, (50, 50))
+            except pygame.error:
+                pass
+
+            clock.tick(60)
+            pygame.display.update()
+        # self._create_restart_banner()
+
     def _create_restart_banner(self):
         """Create a restart banner."""
 
         def _add_text(text, position):
-            text = font.render(text, 1, (255, 255, 255))
+            text = self.font.render(text, 1, (255, 255, 255))
             banner.blit(text, position)
 
         banner = pygame.Surface((screen_size, screen_size))
         banner.set_alpha(200)
         banner.fill((128, 128, 128))
-        font = pygame.font.Font(None, 36)
         _add_text("You are dead! ", (100, 100))
         _add_text(f"Your score: {self.score}.", (100, 140))
         _add_text("Press enter to restart.", (100, 180))
         self.screen.blit(banner, (50, 50))
         pygame.display.update()
-        waiting = True
-        while waiting:
+        while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    waiting = False
                     pygame.quit()
+                    self.save_history(f"{time.time()}_history.txt")
+                    return
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
-                        waiting = False
                         self.restart()
+                        return
 
     def run(self):
         """Run the game."""
         pygame.init()
         pygame.display.set_caption(title)
+
         self.screen = pygame.display.set_mode((screen_size + 100, screen_size + 100))
-        font = pygame.font.Font(None, 36)
-        cell_size = int(screen_size / self.arena_size)
+        self.font = pygame.font.Font(None, 36)
 
         self.initialize()
 
         clock = pygame.time.Clock()
-        running = True
-        while running:
+        while True:
+            self.save_step_to_history()
             if self._check_if_quit():
-                running = False
+                self.save_history(f"{time.time()}_history.txt")
+                return
 
             self.screen.fill(screen_color)
             grid_surface = pygame.Surface((screen_size, screen_size))
@@ -231,10 +341,16 @@ class Game:
 
             self.game_step()
 
-            self.draw_actors(grid_surface, cell_size)
-            self.draw_grid(grid_surface, cell_size)
-            self.draw_score(self.screen, font)
-            self.screen.blit(grid_surface, (50, 50))
+            self.draw_actors(grid_surface, self.cell_size)
+            self.draw_grid(grid_surface, self.cell_size)
+            try:
+                score_text = self.font.render(
+                    f"Score: {self.score}, speed: {self.snake.speed}", 1, (0, 0, 0)
+                )
+                self.screen.blit(score_text, (10, 10))
+                self.screen.blit(grid_surface, (50, 50))
+            except pygame.error:
+                pass
 
             clock.tick(60)
             pygame.display.update()

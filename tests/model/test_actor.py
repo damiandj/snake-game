@@ -93,3 +93,23 @@ class TestSnake(unittest.TestCase):
         self.snake.tail[-1].direction = [0, 1]
         self.snake.add_part()
         self.assertEqual(self.snake.tail[-1].position, [2, 2])
+
+    def test_make_step(self):
+        self.snake.head.position = [1, 2]
+        self.snake.direction = [0, 1]
+        self.snake.add_part()
+        self.snake.add_part()
+        self.snake.make_step()
+        self.assertEqual(self.snake.head.position, [1, 3])
+        self.assertEqual(self.snake.tail[-2].position, [1, 2])
+        self.assertEqual(self.snake.tail[-1].position, [1, 1])
+
+    def test_make_step_out_of_arena(self):
+        self.snake.head.position = [0, 0]
+        self.snake.direction = [-1, 0]
+        self.snake.add_part()
+        self.snake.add_part()
+        self.snake.make_step()
+        self.assertEqual(self.snake.head.position, [9, 0])
+        self.assertEqual(self.snake.tail[-2].position, [0, 0])
+        self.assertEqual(self.snake.tail[-1].position, [1, 0])

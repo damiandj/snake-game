@@ -138,7 +138,7 @@ class Snake(Actor):
             position (List[int]): The initial position of the snake head [x, y].
             arena_sizes (List[int]): The size of the game arena [width, height].
         """
-        self.body = [SnakeHead(position)]
+        self.body: List = [SnakeHead(position)]
         super().__init__(position)
         self.arena_sizes = arena_sizes
 
