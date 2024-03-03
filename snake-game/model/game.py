@@ -30,11 +30,11 @@ class HistoryStep:
 
     def __eq__(self, other):
         return (
-                self.snake_head == other.snake_head
-                and self.snake_tail == other.snake_tail
-                and self.mouse == other.mouse
-                and self.devils == other.devils
-                and self.score == other.score
+            self.snake_head == other.snake_head
+            and self.snake_tail == other.snake_tail
+            and self.mouse == other.mouse
+            and self.devils == other.devils
+            and self.score == other.score
         )
 
 
