@@ -84,7 +84,7 @@ class Snake(Actor):
 
     def speed_up(self):
         """Increase the speed of the snake."""
-        if self.speed < 10:
+        if self.speed < 8:
             self.speed += 1
             self._reset_steps_to_move()
 

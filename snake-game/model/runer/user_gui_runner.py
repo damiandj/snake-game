@@ -1,5 +1,6 @@
 import pygame
 
+import config
 from model.game.game import SnakeGame
 from model.gui.game_gui import GameGui
 
@@ -13,7 +14,7 @@ class UserGuiRunner(GameGui):
 
     def __init__(self):
         """Initialize the user GUI runner."""
-        game = SnakeGame(arena_size=25)
+        game = SnakeGame(arena_size=config.arena_size)
         super().__init__(game)
 
     def _bind_keys(self):

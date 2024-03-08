@@ -95,12 +95,3 @@ class GameGui:
             (10, 10),
         )
         self.screen.blit(game_area, (50, 50))
-
-    def draw_history(self):
-        """Draw the game history."""
-        self.initialize()
-        clock = pygame.time.Clock()
-        for game_stage in self.game.history:
-            self.draw_step(game_stage)
-            clock.tick(60)
-            pygame.display.update()
