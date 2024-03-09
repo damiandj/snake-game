@@ -20,15 +20,15 @@
 # gui = GameGui(game=g)
 # gui.draw_history()
 # from model.runer.user_gui_runner import UserGuiRunner
-from model.runer.random_runner import RandomRunner
+from model.runer.dummy_runner import DummyRunnerGUI
 
-runner = RandomRunner()
+runner = DummyRunnerGUI()
 runner.run()
-from model.runer.history_gui_runner import HistoryGuiRunner
-from utils.saves import get_latest_save_file
-
-game = HistoryGuiRunner(get_latest_save_file())
-game.run()
+# from model.runer.history_gui_runner import HistoryGuiRunner
+# from utils.saves import get_latest_save_file
+#
+# game = HistoryGuiRunner(get_latest_save_file())
+# game.run()
 
 # game = UserGuiRunner()
 # game.run()

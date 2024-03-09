@@ -63,6 +63,12 @@ class SnakeGame:
             used_positions.append(devil.position)
         return used_positions
 
+    def get_deadly_positions(self) -> List[List[int]]:
+        """Get the deadly positions in the game."""
+        deadly_positions = [a.position for a in self.snake.tail + self.devils]
+
+        return deadly_positions
+
     def _create_actor_on_random_position(
             self, actor_cls: Union[Type[Devil], Type[Mouse]]
     ) -> Optional[Union[Devil, Mouse]]:
@@ -104,6 +110,9 @@ class SnakeGame:
         self.history = GameHistory()
         self.initialize_game()
 
+    def death_condition(self):
+        return self.snake.head.position in self.get_deadly_positions()
+
     def step(self):
         """Advance the game by one step."""
         self.snake.step()
@@ -115,11 +124,9 @@ class SnakeGame:
             self.snake_eat_mouse()
             self.mouse = self._create_mouse()
 
-        if self.snake.head.position in [devil.position for devil in self.devils] + [
-            part.position for part in self.snake.tail
-        ]:
-            self.history.save()
-            self.restart()
+        # if self.snake.head.position in self.get_deadly_positions():
+        #     self.history.save()
+        #     self.restart()
 
         self.arena = self._create_arena()
         self.history.add_to_history(HistoryItem(arena=self.arena, score=self.score))

@@ -73,7 +73,7 @@ class GameGui:
             )
 
     @staticmethod
-    def _check_if_quit():
+    def check_if_quit():
         """Check if the game should quit."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

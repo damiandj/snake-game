@@ -21,7 +21,7 @@ class HistoryGuiRunner(GameGui):
         self.initialize()
         clock = pygame.time.Clock()
         for game_stage in self.game.history:
-            if self._check_if_quit():
+            if self.check_if_quit():
                 break
             self.draw_step(game_stage)
             clock.tick(60)

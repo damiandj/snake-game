@@ -88,6 +88,22 @@ class Snake(Actor):
             self.speed += 1
             self._reset_steps_to_move()
 
+    def speed_down(self):
+        """Decrease the speed of the snake."""
+        if self.speed > 1:
+            self.speed -= 1
+            self._reset_steps_to_move()
+
+    def max_speed(self):
+        """Set the maximum speed of the snake."""
+        self.speed = 8
+        self._reset_steps_to_move()
+
+    def ultra_speed(self):
+        """Set the maximum speed of the snake."""
+        self.speed = 10
+        self._reset_steps_to_move()
+
     def add_part(self):
         """Add a part to the snake's body."""
         prev_part = self.body[-1]
@@ -99,14 +115,17 @@ class Snake(Actor):
         new_part.direction = prev_part.direction
         self.body.append(new_part)
 
+    def get_new_head_position(self):
+        """Get the new head position of the snake."""
+        return [
+            (self.head.position[0] + self.direction[0]) % self.arena_sizes[0],
+            (self.head.position[1] + self.direction[1]) % self.arena_sizes[1],
+        ]
+
     def make_step(self):
         """Move the snake by one step."""
         old_snake = copy.deepcopy(self.body)
-        new_head_position = [
-            (old_snake[0].position[0] + self.direction[0]) % self.arena_sizes[0],
-            (old_snake[0].position[1] + self.direction[1]) % self.arena_sizes[1],
-        ]
-        self.head.position = new_head_position
+        self.head.position = self.get_new_head_position()
 
         for item, part in enumerate(self.tail):
             part.position = old_snake[item].position

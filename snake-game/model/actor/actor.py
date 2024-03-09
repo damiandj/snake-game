@@ -28,6 +28,8 @@ class Actor:
         self.step_to_move = 11 - self.speed
         self.direction = [0, 0]
 
+        self._turning_blocked = False
+
     @property
     def direction(self) -> List[int]:
         """Get the direction of the actor."""
@@ -43,6 +45,7 @@ class Actor:
         self.step_to_move -= 1
         if not self.step_to_move:
             self._reset_steps_to_move()
+            self._turning_blocked = False
             self.make_step()
 
     def _reset_steps_to_move(self):
@@ -51,15 +54,21 @@ class Actor:
 
     def turn_north(self):
         """Turn the actor to the north."""
+        if self._turning_blocked:
+            return
         if self.direction[1] != 0:
             return
         self.direction = [0, -1]
+        self._turning_blocked = True
 
     def turn_south(self):
         """Turn the actor to the south."""
+        if self._turning_blocked:
+            return
         if self.direction[1] != 0:
             return
         self.direction = [0, 1]
+        self._turning_blocked = True
 
     def turn_west(self):
         """Turn the actor to the west."""
@@ -69,9 +78,12 @@ class Actor:
 
     def turn_east(self):
         """Turn the actor to the east."""
+        if self._turning_blocked:
+            return
         if self.direction[0] != 0:
             return
         self.direction = [1, 0]
+        self._turning_blocked = True
 
     def turn_back(self):
         """Turn back the actor."""

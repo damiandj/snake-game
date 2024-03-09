@@ -1,12 +1,9 @@
 import random
 
-import config
-from model.game import SnakeGame
+from model.runer.runner import Runner, GUIRunner
 
 
-class RandomRunner:
-    def __init__(self):
-        self.game = SnakeGame(arena_size=config.arena_size)
+class RandomRunner(Runner):
 
     def make_move(self):
         actions = [
@@ -14,19 +11,11 @@ class RandomRunner:
                       self.game.snake.turn_south,
                       self.game.snake.turn_west,
                       self.game.snake.turn_east,
-                  ] + [None] * 100
+                  ] + [None] * 50
         action = random.choice(actions)
         if action:
             action()
 
-    def run(self):
-        self.game.initialize_game()
-        i = 0
-        while i < 1000:
-            i += 1
-            # if self._check_if_quit():
-            #     self.game.history.save()
-            #     break
-            self.make_move()
-            self.game.step()
-        self.game.history.save()
+
+class RandomRunnerGUI(GUIRunner, RandomRunner):
+    pass
