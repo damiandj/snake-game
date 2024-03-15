@@ -124,9 +124,5 @@ class SnakeGame:
             self.snake_eat_mouse()
             self.mouse = self._create_mouse()
 
-        # if self.snake.head.position in self.get_deadly_positions():
-        #     self.history.save()
-        #     self.restart()
-
         self.arena = self._create_arena()
         self.history.add_to_history(HistoryItem(arena=self.arena, score=self.score))

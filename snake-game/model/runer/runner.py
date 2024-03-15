@@ -38,11 +38,13 @@ class GUIRunner(Runner):
         if keys[pygame.K_w]:
             self.game.snake.speed_up()
         elif keys[pygame.K_s]:
-            self.game.snake.speed_donw()
+            self.game.snake.speed_down()
         elif keys[pygame.K_a]:
             self.game.snake.add_part()
         elif keys[pygame.K_r]:
             self.game.restart()
+        elif keys[pygame.K_e]:
+            self.game.snake.ultra_speed()
 
     def run(self, steps: int = 1000):
         self.gui.initialize()

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 
 class Actor:
@@ -6,7 +6,7 @@ class Actor:
     Base class for game actors.
 
     Attributes:
-        position (List[int]): The initial position of the actor [x, y].
+        position (Tuple[int]): The initial position of the actor [x, y].
         color (str): The color of the actor.
         speed (int): The speed of the actor.
         step_to_move (int): Steps needed for the actor to move.

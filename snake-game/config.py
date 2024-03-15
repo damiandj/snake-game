@@ -2,7 +2,7 @@ from pathlib import Path
 
 grid_line_color = "grey64"
 screen_size = 640
-arena_size = 25
+arena_size = 21
 
 screen_color = "white"
 title = "Pygame Snake"
