@@ -70,10 +70,10 @@ class SnakeGame:
         return deadly_positions
 
     def _create_actor_on_random_position(
-            self, actor_cls: Union[Type[Devil], Type[Mouse]]
+        self, actor_cls: Union[Type[Devil], Type[Mouse]]
     ) -> Optional[Union[Devil, Mouse]]:
         """Create an actor on a random position."""
-        for _ in range(self.arena_size ** 2):
+        for _ in range(self.arena_size**2):
             actor = actor_cls(
                 position=[
                     random.randint(0, self.arena_size - 1),

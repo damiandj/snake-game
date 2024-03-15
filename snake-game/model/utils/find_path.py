@@ -3,7 +3,7 @@ from typing import Tuple, Dict, List, Optional
 
 
 def heuristic_cost_estimate(
-        start: Tuple[int, int], goal: Tuple[int, int], size: Tuple[int, int]
+    start: Tuple[int, int], goal: Tuple[int, int], size: Tuple[int, int]
 ) -> int:
     """
     Estimate the cost from the start point to the goal point using the Manhattan distance.
@@ -22,7 +22,7 @@ def heuristic_cost_estimate(
 
 
 def reconstruct_path(
-        came_from: Dict[Tuple[int, int], Tuple[int, int]], current: Tuple[int, int]
+    came_from: Dict[Tuple[int, int], Tuple[int, int]], current: Tuple[int, int]
 ) -> List[Tuple[int, int]]:
     """
     Reconstructs the path from the start to the current node.
@@ -42,10 +42,10 @@ def reconstruct_path(
 
 
 def find_path_with_omission(
-        size: Tuple[int, int],
-        start: Tuple[int, int],
-        goal: Tuple[int, int],
-        omitted_points: List[Tuple[int, int]],
+    size: Tuple[int, int],
+    start: Tuple[int, int],
+    goal: Tuple[int, int],
+    omitted_points: List[Tuple[int, int]],
 ) -> Optional[List[Tuple[int, int]]]:
     """
     Finds a path from start to goal while avoiding specified omitted points.
