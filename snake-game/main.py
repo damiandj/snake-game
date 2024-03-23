@@ -20,9 +20,9 @@
 # gui = GameGui(game=g)
 # gui.draw_history()
 # from model.runer.user_gui_runner import UserGuiRunner
-from model.runer.dummy_runner import DummyRunnerGUI
+from model.runer.smart_runner import SmartRunnerGUI
 
-runner = DummyRunnerGUI()
+runner = SmartRunnerGUI()
 runner.run()
 # from model.runer.history_gui_runner import HistoryGuiRunner
 # from utils.saves import get_latest_save_file
