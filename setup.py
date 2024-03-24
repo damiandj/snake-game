@@ -5,8 +5,7 @@ with open("requirements.txt") as fp:
 
 setup(
     name="snake_game",
-    # version=tag,
-    description="Tool for manual image labeling",
+    description="Snake game ",
     url="https://github.com/damiandj/snake-game/",
     author="Damian Jabłczyk",
     author_email="damianjablczyk@gmail.com",
