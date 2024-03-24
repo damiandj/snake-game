@@ -4,7 +4,7 @@ from typing import List
 
 from parameterized import parameterized
 
-from model.actor.snake import Snake
+from snake_game.model.actor.snake import Snake
 
 
 class TestSnake(unittest.TestCase):

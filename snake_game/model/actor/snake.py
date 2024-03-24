@@ -1,8 +1,8 @@
 import copy
 from typing import List
 
-from config import snake_body_color, snake_head_color
-from model.actor.actor import Actor
+from snake_game.config import snake_body_color, snake_head_color
+from snake_game.model.actor.actor import Actor
 
 
 class SnakePart(Actor):

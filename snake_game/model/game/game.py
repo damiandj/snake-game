@@ -2,9 +2,9 @@ import copy
 import random
 from typing import Union, Type, List, Optional
 
-from model.actor import Snake, Mouse, Devil
-from model.arena import Arena
-from model.history import HistoryItem, GameHistory
+from snake_game.model.actor import Snake, Mouse, Devil
+from snake_game.model.arena import Arena
+from snake_game.model.history import HistoryItem, GameHistory
 
 
 class SnakeGame:

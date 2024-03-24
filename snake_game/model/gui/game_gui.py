@@ -1,9 +1,9 @@
 import pygame
 
-from config import screen_size, screen_color, arena_color, grid_line_color, title
-from model.arena import Arena
-from model.game.game import SnakeGame
-from model.history.history import HistoryItem
+from snake_game.config import screen_size, screen_color, arena_color, grid_line_color, title
+from snake_game.model.arena import Arena
+from snake_game.model.game.game import SnakeGame
+from snake_game.model.history.history import HistoryItem
 
 
 class GameGui:

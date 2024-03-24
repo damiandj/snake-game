@@ -1,6 +1,6 @@
 import pygame
 
-from model.runer.runner import GUIRunner
+from snake_game.model.runer.runner import GUIRunner
 
 
 class UserGuiRunner(GUIRunner):

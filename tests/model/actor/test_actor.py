@@ -3,7 +3,7 @@ from typing import List
 
 from parameterized import parameterized
 
-from model.actor.actor import Actor
+from snake_game.model.actor.actor import Actor
 
 
 class TestActor(unittest.TestCase):

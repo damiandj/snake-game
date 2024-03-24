@@ -1,7 +1,7 @@
 from typing import Tuple, List
 
-from model.runer.runner import Runner, GUIRunner
-from model.utils.find_path import find_path_with_omission
+from snake_game.model.runer.runner import Runner, GUIRunner
+from snake_game.model.utils.find_path import find_path_with_omission
 
 
 class SmartRunner(Runner):

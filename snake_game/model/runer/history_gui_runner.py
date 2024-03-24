@@ -2,9 +2,9 @@ from pathlib import Path
 
 import pygame
 
-from model.game import SnakeGame
-from model.gui import GameGui
-from model.history import GameHistory
+from snake_game.model.game import SnakeGame
+from snake_game.model.gui import GameGui
+from snake_game.model.history import GameHistory
 
 
 class HistoryGuiRunner(GameGui):

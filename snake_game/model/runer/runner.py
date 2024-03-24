@@ -1,8 +1,8 @@
 import pygame
 
-import config
-from model.game import SnakeGame
-from model.gui import GameGui
+import snake_game.config as config
+from snake_game.model.game import SnakeGame
+from snake_game.model.gui import GameGui
 
 
 class Runner:

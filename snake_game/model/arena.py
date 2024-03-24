@@ -1,5 +1,5 @@
-from model.actor import Mouse, Snake, Devil
-from model.actor.snake import SnakeHead, SnakePart
+from snake_game.model.actor import Mouse, Snake, Devil
+from snake_game.model.actor.snake import SnakeHead, SnakePart
 
 
 class Arena:

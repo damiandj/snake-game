@@ -5,8 +5,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from config import save_dir
-from model.arena import Arena
+from snake_game.config import save_dir
+from snake_game.model.arena import Arena
 
 
 @dataclass(frozen=True)

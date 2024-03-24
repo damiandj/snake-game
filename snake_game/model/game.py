@@ -5,7 +5,7 @@ from typing import List
 
 import pygame
 
-from config import (
+from snake_game.config import (
     grid_line_color,
     screen_size,
     screen_color,
@@ -13,7 +13,7 @@ from config import (
     arena_color,
     save_dir,
 )
-from model.actor import Snake, Mouse, Devil
+from snake_game.model.actor import Snake, Mouse, Devil
 
 
 @dataclass(frozen=True)

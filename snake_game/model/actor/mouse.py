@@ -1,7 +1,7 @@
 from typing import List
 
-from config import mouse_color
-from model.actor.actor import Actor
+from snake_game.config import mouse_color
+from snake_game.model.actor.actor import Actor
 
 
 class Mouse(Actor):
