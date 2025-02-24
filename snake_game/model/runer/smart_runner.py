@@ -18,16 +18,19 @@ class SmartRunner(Runner):
             start=start,
             goal=goal,
             omitted_points=[
-                (a.position[0], a.position[1])
-                for a in self.game.snake.tail + self.game.devils
-            ],
+                               (a.position[0], a.position[1])
+                               for a in self.game.snake.tail + self.game.devils
+                           ] + [
+                               (a.next_position()[0], a.next_position()[1])
+                               for a in self.game.devils
+                           ]
         )
         if path:
             self._follow_the_path(path, start)
         else:
             if (
-                self.game.snake.get_new_head_position()
-                not in self.game.get_deadly_positions()
+                    self.game.snake.next_position()
+                    not in self.game.get_deadly_positions()
             ):
                 pass
             else:
@@ -64,7 +67,7 @@ class SmartRunner(Runner):
                 self.game.snake.turn_west()
 
     def _follow_the_path(
-        self, path: List[Tuple[int, int]], snake_head_position: Tuple[int, int]
+            self, path: List[Tuple[int, int]], snake_head_position: Tuple[int, int]
     ) -> None:
         """
         Method to follow the calculated path.
@@ -75,23 +78,23 @@ class SmartRunner(Runner):
         """
         next_step = path[1]
         if next_step == (
-            (snake_head_position[0] + 1) % self.game.arena_size,
-            snake_head_position[1],
+                (snake_head_position[0] + 1) % self.game.arena_size,
+                snake_head_position[1],
         ):
             self.game.snake.turn_east()
         elif next_step == (
-            (snake_head_position[0] - 1) % self.game.arena_size,
-            snake_head_position[1],
+                (snake_head_position[0] - 1) % self.game.arena_size,
+                snake_head_position[1],
         ):
             self.game.snake.turn_west()
         elif next_step == (
-            snake_head_position[0],
-            (snake_head_position[1] + 1) % self.game.arena_size,
+                snake_head_position[0],
+                (snake_head_position[1] + 1) % self.game.arena_size,
         ):
             self.game.snake.turn_south()
         elif next_step == (
-            snake_head_position[0],
-            (snake_head_position[1] - 1) % self.game.arena_size,
+                snake_head_position[0],
+                (snake_head_position[1] - 1) % self.game.arena_size,
         ):
             self.game.snake.turn_north()
 

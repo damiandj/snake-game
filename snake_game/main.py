@@ -19,7 +19,7 @@
 #
 # gui = GameGui(game=g)
 # gui.draw_history()
-# from model.runer.user_gui_runner import UserGuiRunner
+from model.runer.user_gui_runner import UserGuiRunner
 from model.runer.smart_runner import SmartRunnerGUI
 
 runner = SmartRunnerGUI()

@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 
 class Actor:
@@ -13,15 +13,17 @@ class Actor:
         direction (List[int]): The direction of the actor.
     """
 
-    def __init__(self, position: List[int], color: str = "black"):
+    def __init__(self, position: List[int], arena_sizes: Optional[List[int]] = None, color: str = "black"):
         """
         Initialize an Actor object.
 
         Args:
             position (List[int]): The initial position of the actor.
+            arena_sizes (List[int]): The size of the game arena [width, height].
             color (str, optional): The color of the actor. Defaults to "black".
         """
         self.position = position
+        self.arena_sizes = arena_sizes
         self.color = color
 
         self.speed = 1
@@ -85,10 +87,17 @@ class Actor:
         self.direction = [1, 0]
         self._turning_blocked = True
 
+    def turn_left(self):
+        """Turn the actor to the left."""
+        self.direction = [self.direction[1], -self.direction[0]]
+
     def turn_back(self):
         """Turn back the actor."""
         self.direction = list(map(lambda x: -1 * x, self.direction))
 
+    def next_position(self) -> List[int]:
+        return self.position
+
     def make_step(self):
         """Make a step in the game."""
-        pass
+        self.position = self.next_position()

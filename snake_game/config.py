@@ -1,8 +1,8 @@
 from pathlib import Path
 
 grid_line_color = "grey64"
-screen_size = 640
-arena_size = 21
+screen_size = 800
+arena_size = 51
 
 screen_color = "white"
 title = "Pygame Snake"

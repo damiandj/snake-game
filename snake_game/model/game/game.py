@@ -57,6 +57,7 @@ class SnakeGame:
         used_positions = []
         if self.snake:
             used_positions.extend([part.position for part in self.snake.body])
+            used_positions.append(self.snake.next_position())
         if self.mouse:
             used_positions.append(self.mouse.position)
         for devil in self.devils:
@@ -78,7 +79,8 @@ class SnakeGame:
                 position=[
                     random.randint(0, self.arena_size - 1),
                     random.randint(0, self.arena_size - 1),
-                ]
+                ],
+                arena_sizes=[self.arena_size, self.arena_size],
             )
             if actor.position not in self.get_used_positions():
                 return actor

@@ -20,7 +20,7 @@ class SnakePart(Actor):
         Args:
             position (List[int]): The initial position of the snake part.
         """
-        super().__init__(position, snake_body_color)
+        super().__init__(position, color=snake_body_color)
 
 
 class SnakeHead(Actor):
@@ -38,7 +38,7 @@ class SnakeHead(Actor):
         Args:
             position (List[int]): The initial position of the snake head.
         """
-        super().__init__(position, snake_head_color)
+        super().__init__(position, color=snake_head_color)
 
 
 class Snake(Actor):
@@ -59,8 +59,7 @@ class Snake(Actor):
             arena_sizes (List[int]): The size of the game arena [width, height].
         """
         self.body: List = [SnakeHead(position)]
-        super().__init__(position)
-        self.arena_sizes = arena_sizes
+        super().__init__(position, arena_sizes)
 
     @property
     def direction(self):
@@ -115,8 +114,7 @@ class Snake(Actor):
         new_part.direction = prev_part.direction
         self.body.append(new_part)
 
-    def get_new_head_position(self):
-        """Get the new head position of the snake."""
+    def next_position(self) -> List[int]:
         return [
             (self.head.position[0] + self.direction[0]) % self.arena_sizes[0],
             (self.head.position[1] + self.direction[1]) % self.arena_sizes[1],
@@ -125,7 +123,7 @@ class Snake(Actor):
     def make_step(self):
         """Move the snake by one step."""
         old_snake = copy.deepcopy(self.body)
-        self.head.position = self.get_new_head_position()
+        self.head.position = self.next_position()
 
         for item, part in enumerate(self.tail):
             part.position = old_snake[item].position
